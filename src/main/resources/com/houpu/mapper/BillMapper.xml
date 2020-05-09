@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.houpu.mapper.BillMapper">
+
+    <select id="findAll" resultMap="billWithProvider">
+        select * from t_bill
+        <where>
+            <if test="productName!=null and productName!=''">
+                productName like concat("%",#{productName},"%")
+            </if>
+            <if test="providerId!=null">
+                and providerId like concat("%",#{providerId},"%")
+            </if>
+            <if test="isPayment!=null">
+                and isPayment like concat("%",#{isPayment},"%")
+            </if>
+        </where>
+    </select>
+    
+    <resultMap id="billWithProvider" type="bill">
+        <association property="provider" column="providerId" javaType="provider" select="com.houpu.mapper.ProviderMapper.findById"></association>
+    </resultMap>
+
+    <insert id="save">
+        insert into t_bill(billCode,productName,productDesc,productUnit,productCount,totalPrice,isPayment,createdBy,creationDate,modifyBy,modifyDate,providerId)
+        values (#{billCode},#{productName},#{productDesc},#{productUnit},#{productCount},#{totalPrice},#{isPayment},#{createdBy},now(),#{modifyBy},now(),#{provider.id})
+    </insert>
+
+    <select id="findById" resultMap="billWithProvider">
+        select * from t_bill where id=#{id}
+    </select>
+
+    <update id="update">
+        update t_bill
+        <set>
+            <if test="billCode!=null and billCode!=''">
+                billCode=#{billCode},
+            </if>
+            <if test="productName!=null and productName!=''">
+                productName=#{productName},
+            </if>
+            <if test="productDesc!=null and productDesc!=''">
+                productDesc=#{productDesc},
+            </if>
+            <if test="productUnit!=null and productUnit!=''">
+                productUnit=#{productUnit},
+            </if>
+            <if test="productCount!=null">
+                productCount=#{productCount},
+            </if>
+            <if test="totalPrice!=null">
+                totalPrice=#{totalPrice},
+            </if>
+            <if test="isPayment!=null">
+                isPayment=#{isPayment},
+            </if>
+            <if test="modifyBy!=null">
+                modifyBy=#{modifyBy},
+            </if>
+            <if test="provider.id!=null">
+                providerId=#{provider.id},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+</mapper>

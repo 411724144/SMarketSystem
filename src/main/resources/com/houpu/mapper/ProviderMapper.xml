@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.houpu.mapper.ProviderMapper">
+
+    <select id="findTotalCount" resultType="int">
+        select count(id) from t_provider
+    </select>
+
+    <select id="findAll" resultType="provider">
+        select * from t_provider
+        <where>
+            <if test="proCode!=null and proCode!=''">
+                 proCode like concat("%",#{proCode},"%")
+            </if>
+            <if test="proName!=null and proName!=''">
+               and   proName  like concat("%",#{proName},"%")
+            </if>
+        </where>
+    </select>
+
+    <insert id="add">
+        insert into t_provider(proCode,proName,proDesc,proContact,proPhone,proAddress,proFax,createdBy,creationDate,modifyBy,modifyDate)
+        values (#{proCode},#{proName},#{proDesc},#{proContact},#{proPhone},#{proAddress},#{proFax},#{createdBy},now(),#{modifyBy},now())
+    </insert>
+
+    <update id="update">
+        update  t_provider
+        <set>
+            <if test="proCode!=null and proCode!=''">
+                proCode=#{proCode},
+            </if>
+            <if test="proName!=null and proName!=''">
+                proName=#{proName},
+            </if>
+            <if test="proDesc!=null and proDesc!=''">
+                proDesc=#{proDesc},
+            </if>
+            <if test="proContact!=null and proContact!=''">
+                proContact=#{proContact},
+            </if>
+            <if test="proPhone!=null and proPhone!=''">
+                proPhone=#{proPhone},
+            </if>
+            <if test="proAddress!=null and proAddress!=''">
+                proAddress=#{proAddress},
+            </if>
+            <if test="proFax!=null and proFax!=''">
+                proFax=#{proFax},
+            </if>
+            <if test="modifyBy!=null and modifyBy!=''">
+                modifyBy=#{modifyBy},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+</mapper>
